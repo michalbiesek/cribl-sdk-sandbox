@@ -1,0 +1,31 @@
+{
+  "name": "cribl-sdk-sandbox",
+  "version": "1.0.0",
+  "description": "Multi-language sandbox for experimenting with Cribl Control Plane and Cloud Management SDKs",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "control-plane:cloud": "npx tsx examples/control-plane/typescript/cloud_list_worker_group.ts",
+    "control-plane:onprem": "npx tsx examples/control-plane/typescript/onprem_list_worker_group.ts",
+    "mgmt-plane:workspaces": "npx tsx examples/mgmt-plane/typescript/list_workspaces.ts"
+  },
+  "keywords": [
+    "cribl",
+    "sdk",
+    "control-plane",
+    "management-plane"
+  ],
+  "author": "Cribl",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "cribl-control-plane": "latest",
+    "cribl-mgmt-plane": "latest",
+    "dotenv": "^16.3.1"
+  }
+}

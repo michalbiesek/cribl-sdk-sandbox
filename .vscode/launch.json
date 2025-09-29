@@ -1,0 +1,95 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Control Plane: Cloud Worker Groups",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/control-plane/python/cloud_list_worker_group.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "justMyCode": false
+        },
+        {
+            "name": "Control Plane: On-Prem Worker Groups",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/control-plane/python/onprem_list_worker_group.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "justMyCode": false
+        },
+        {
+            "name": "Mgmt Plane: List Workspaces",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/mgmt-plane/python/list_workspaces.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "justMyCode": false
+        },
+        {
+            "name": "TS Control Plane: Cloud Worker Groups",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/control-plane/typescript/cloud_list_worker_group.ts",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "TS Control Plane: On-Prem Worker Groups",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/control-plane/typescript/onprem_list_worker_group.ts",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "TS Mgmt Plane: List Workspaces",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/mgmt-plane/typescript/list_workspaces.ts",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Go Control Plane: Cloud Worker Groups",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/examples/control-plane/go/cloud_list_worker_group.go",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/examples/control-plane/go",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Go Control Plane: On-Prem Worker Groups",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/examples/control-plane/go/onprem_list_worker_group.go",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/examples/control-plane/go",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Go Mgmt Plane: List Workspaces",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/examples/mgmt-plane/go/list_workspaces.go",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/examples/mgmt-plane/go",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

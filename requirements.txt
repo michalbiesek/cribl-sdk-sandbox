@@ -1,0 +1,22 @@
+# Core dependencies for Cribl Control Plane SDK experimentation
+requests>=2.31.0
+pydantic>=2.0.0
+typing-extensions>=4.0.0
+httpx>=0.24.0
+
+# Cribl Control Plane SDK (Python)
+git+https://github.com/criblio/cribl_control_plane_sdk_python.git
+
+# Cribl Cloud Management SDK (Python)
+git+https://github.com/criblio/cribl_cloud_management_sdk_python.git
+
+# Development and debugging tools
+python-dotenv>=1.0.0
+rich>=13.0.0
+
+# Testing and quality tools
+pytest>=7.0.0
+black>=23.0.0
+pylint>=2.17.0
+isort>=5.12.0
+
