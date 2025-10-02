@@ -5,7 +5,7 @@
 
 import dotenv from 'dotenv';
 import { CriblControlPlane } from 'cribl-control-plane';
-
+import { ProductsCore } from 'cribl-control-plane/models';
 // Load environment variables
 dotenv.config();
 
@@ -46,7 +46,7 @@ async function listWorkerGroups(): Promise<void> {
 
         // List worker groups  
         console.log('Fetching worker groups...');
-        const response = await client.groups.list({ product: 'stream' });
+        const response = await client.groups.list({ product: ProductsCore.Stream });
         
         // Handle the case where items might be undefined or empty
         const items = response.items || [];
