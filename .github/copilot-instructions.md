@@ -1,3 +1,8 @@
+---
+description: "Cribl SDK development guidelines for Control Plane and Management Plane APIs across Python, TypeScript, and Go"
+applyTo: "**"
+---
+
 # Cribl SDK Sandbox - Copilot Instructions
 
 ## Project Overview
@@ -136,6 +141,39 @@ When making changes, ensure:
 - Output is clean (no emojis, minimal formatting)
 - All required imports are included
 - Environment variable loading works (`.env` file support)
+
+### 10. Code Quality Standards
+
+Follow these coding standards for all languages:
+
+#### Python
+- Follow PEP 8 style guide
+- Use type hints for function parameters and return types
+- Use descriptive variable and function names
+- Include docstrings for functions and classes
+- Use 4 spaces for indentation
+
+#### TypeScript
+- Follow TypeScript best practices
+- Use explicit type annotations
+- Prefer `const` and `let` over `var`
+- Use descriptive variable and function names
+- Use 2 spaces for indentation
+
+#### Go
+- Follow Go conventions and `gofmt` formatting
+- Use descriptive variable and function names
+- Handle errors explicitly
+- Use proper package naming
+- Use tabs for indentation
+
+### 11. Documentation Standards
+
+When adding comments or documentation:
+- Write clear, concise comments explaining the "why" not just the "what"
+- Document all public functions and methods
+- Include usage examples for complex operations
+- Keep comments up-to-date with code changes
 
 ## Development Environment
 
