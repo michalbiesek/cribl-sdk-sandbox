@@ -42,6 +42,16 @@
     }
   },
   "forwardPorts": [8000, 8080, 19000, 4200],
-  "postCreateCommand": "cp .env.example .env && pip install --upgrade pip && pip install -r requirements.txt && npm install && npm install -g typescript ts-node tsx && cd examples/control-plane/go && go mod download && cd ../../../examples/mgmt-plane/go && go mod download && cd ../../..",
+  "postCreateCommand": [
+    "cp .env.example .env",
+    "pip install --upgrade pip",
+    "pip install --upgrade --force-reinstall git+https://github.com/criblio/cribl_control_plane_sdk_python.git git+https://github.com/criblio/cribl_cloud_management_sdk_python.git",
+    "pip install -r requirements.txt",
+    "npm install",
+    "npm update cribl-control-plane cribl-mgmt-plane",
+    "npm install -g typescript ts-node tsx",
+    "cd examples/control-plane/go && go get -u github.com/criblio/cribl-control-plane-sdk-go && go mod tidy",
+    "cd examples/mgmt-plane/go && go get -u github.com/criblio/cribl-cloud-management-sdk-go && go mod tidy"
+  ],
   "remoteUser": "vscode"
 }
