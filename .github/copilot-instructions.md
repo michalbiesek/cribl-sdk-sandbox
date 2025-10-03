@@ -1,3 +1,11 @@
+### 12. Compilation and Example Rewrite Rules
+
+#### Compilation Verification
+- After making changes to code (especially Go, TypeScript, or any compiled language), always verify that the code compiles without errors. If errors are found, fix them before considering the task complete.
+
+#### Example Rewrite Consistency
+- When asked to rewrite or update an example, always update the corresponding examples in all supported programming languages (Python, TypeScript, Go) unless the user specifies otherwise. Ensure all examples are consistent in logic and output.
+
 ---
 description: "Cribl SDK development guidelines for Control Plane and Management Plane APIs across Python, TypeScript, and Go"
 applyTo: "**"
