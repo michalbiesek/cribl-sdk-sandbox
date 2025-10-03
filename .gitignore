@@ -44,7 +44,6 @@ yarn-error.log*
 go.work
 
 # IDEs
-.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -63,8 +62,8 @@ Thumbs.db
 
 # Environment variables
 .env
-.env.local
-.env.*.local
+!.env.example
+.env.*
 
 # Docker
 .dockerignore
