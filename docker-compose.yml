@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   cribl-leader:
     image: cribl/cribl:latest
