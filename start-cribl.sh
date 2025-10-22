@@ -17,15 +17,19 @@ else
   FORWARDED_URL="http://localhost:${PORT}"
 fi
 
-# Check if Cribl is running
-if curl -s -f http://localhost:${PORT}/api/v1/system/health > /dev/null 2>&1; then
-    echo "✅ Cribl Stream Leader is running!"
-    echo "🌐 Access Cribl Stream UI at: ${FORWARDED_URL}"
-    echo "📊 Default credentials: admin/admin (change on first login)"
-else
-    echo "⚠️  Cribl Stream may still be starting up..."
-    echo "🌐 Try accessing: ${FORWARDED_URL} in a few moments"
-fi
+echo -n "⏳ Waiting for Cribl Stream Leader to start "
+while true; do
+    if curl -s -f "http://localhost:${PORT}/api/v1/system/health" > /dev/null 2>&1; then
+        echo ""
+        echo "✅ Cribl Stream Leader is running!"
+        echo "🌐 Access Cribl Stream UI at: ${FORWARDED_URL}"
+        echo "📊 Default credentials: admin/admin (change on first login)"
+        break
+    else
+        echo -n "."
+        sleep 1
+    fi
+done
 
 echo ""
 echo "📝 To stop Cribl Stream: ./stop-cribl.sh"
