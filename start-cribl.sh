@@ -19,7 +19,7 @@ fi
 
 echo -n "⏳ Waiting for Cribl Stream Leader to start "
 while true; do
-    if curl -s -f "http://localhost:${PORT}/api/v1/system/health" > /dev/null 2>&1; then
+    if curl -s -f "http://localhost:${PORT}/api/v1/health" > /dev/null 2>&1; then
         echo ""
         echo "✅ Cribl Stream Leader is running!"
         echo "🌐 Access Cribl Stream UI at: ${FORWARDED_URL}"
