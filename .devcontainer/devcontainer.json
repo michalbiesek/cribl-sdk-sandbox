@@ -15,9 +15,6 @@
     },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.12"
     }
   },
   "customizations": {
@@ -36,7 +33,7 @@
         "python.formatting.provider": "black",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true,
-        "editor.formatOnSave": false,
+        "editor.formatOnSave": true,
         "python.analysis.typeCheckingMode": "basic"
       }
     }
