@@ -26,6 +26,7 @@ func listWorkerGroups() error {
 	clientID := getEnvOrDefault("CRIBL_CLIENT_ID", "your-client-id")
 	clientSecret := getEnvOrDefault("CRIBL_CLIENT_SECRET", "your-client-secret")
 	workspace := getEnvOrDefault("CRIBL_WORKSPACE_NAME", "main")
+	domain := getEnvOrDefault("CRIBL_DOMAIN", "cribl.cloud")
 
 	// Check if credentials are properly set
 	if orgID == "" || clientID == "" || clientSecret == "" ||
@@ -45,13 +46,13 @@ func listWorkerGroups() error {
 		ClientOauth: &components.SchemeClientOauth{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			TokenURL:     "https://login.cribl.cloud/oauth/token",
-			Audience:     "https://api.cribl.cloud",
+			TokenURL:     fmt.Sprintf("https://login.%s/oauth/token", domain),
+			Audience:     fmt.Sprintf("https://api.%s", domain),
 		},
 	}
 
 	// Create client
-	baseURL := fmt.Sprintf("https://%s-%s.cribl.cloud/api/v1", workspace, orgID)
+	baseURL := fmt.Sprintf("https://%s-%s.%s/api/v1", workspace, orgID, domain)
 	client := criblcontrolplane.New(baseURL, criblcontrolplane.WithSecurity(security))
 
 	// List worker groups

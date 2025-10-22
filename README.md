@@ -27,6 +27,7 @@ Connect to Cribl.Cloud using OAuth2 authentication:
 - `CRIBL_ORG_ID` - Your organization ID
 - `CRIBL_CLIENT_ID` - OAuth2 client ID  
 - `CRIBL_CLIENT_SECRET` - OAuth2 client secret
+- `CRIBL_DOMAIN` - Domain for Cribl Cloud (defaults to `cribl.cloud`)
 
 For detailed authentication setup, see: [Cribl API Documentation](https://docs.cribl.io/api/#criblcloud)
 
