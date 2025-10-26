@@ -3,8 +3,8 @@
  * Simple example: List Workspaces from Cribl Management Plane
  */
 
-import dotenv from 'dotenv';
 import { CriblMgmtPlane } from 'cribl-mgmt-plane';
+import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
@@ -17,6 +17,7 @@ async function listWorkspaces(): Promise<void> {
     const orgId = process.env.CRIBL_ORG_ID || 'your-org-id';
     const clientId = process.env.CRIBL_CLIENT_ID || 'your-client-id';
     const clientSecret = process.env.CRIBL_CLIENT_SECRET || 'your-client-secret';
+    const domain = process.env.CRIBL_DOMAIN || 'cribl.cloud';
 
     // Check if credentials are properly set
     if (!orgId || !clientId || !clientSecret || 
@@ -32,13 +33,13 @@ async function listWorkspaces(): Promise<void> {
     try {
         // Create client
         const client = new CriblMgmtPlane({
-            serverURL: 'https://gateway.cribl.cloud',
+            serverURL: `https://gateway.${domain}`,
             security: {
                 clientOauth: {
                     clientID: clientId,
                     clientSecret: clientSecret,
-                    tokenURL: 'https://login.cribl.cloud/oauth/token',
-                    audience: 'https://api.cribl.cloud'
+                    tokenURL: `https://login.${domain}/oauth/token`,
+                    audience: `https://api.${domain}`
                 }
             }
         });

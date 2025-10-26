@@ -25,6 +25,7 @@ func listWorkspaces() error {
 	orgID := getEnvOrDefault("CRIBL_ORG_ID", "your-org-id")
 	clientID := getEnvOrDefault("CRIBL_CLIENT_ID", "your-client-id")
 	clientSecret := getEnvOrDefault("CRIBL_CLIENT_SECRET", "your-client-secret")
+	domain := getEnvOrDefault("CRIBL_DOMAIN", "cribl.cloud")
 
 	// Check if credentials are properly set
 	if orgID == "" || clientID == "" || clientSecret == "" ||
@@ -41,13 +42,13 @@ func listWorkspaces() error {
 
 	// Create client with authentication
 	client := criblcloudmanagementsdkgo.New(
-		criblcloudmanagementsdkgo.WithServerURL("https://gateway.cribl.cloud"),
+		criblcloudmanagementsdkgo.WithServerURL(fmt.Sprintf("https://gateway.%s", domain)),
 		criblcloudmanagementsdkgo.WithSecurity(components.Security{
 			ClientOauth: &components.SchemeClientOauth{
 				ClientID:     clientID,
 				ClientSecret: clientSecret,
-				TokenURL:     "https://login.cribl.cloud/oauth/token",
-				Audience:     "https://api.cribl.cloud",
+				TokenURL:     fmt.Sprintf("https://login.%s/oauth/token", domain),
+				Audience:     fmt.Sprintf("https://api.%s", domain),
 			},
 		}),
 	)

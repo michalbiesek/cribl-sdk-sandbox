@@ -26,6 +26,7 @@ async def list_workspaces():
     org_id = os.getenv("CRIBL_ORG_ID") or "your-org-id"
     client_id = os.getenv("CRIBL_CLIENT_ID") or "your-client-id"
     client_secret = os.getenv("CRIBL_CLIENT_SECRET") or "your-client-secret"
+    domain = os.getenv("CRIBL_DOMAIN") or "cribl.cloud"
 
     # Check if credentials are properly set (not empty or placeholders)
     if not all([org_id, client_id, client_secret]) or any(val.startswith("your-") for val in [org_id, client_id, client_secret]):
@@ -41,12 +42,12 @@ async def list_workspaces():
         client_oauth = SchemeClientOauth(
             client_id=client_id,
             client_secret=client_secret,
-            token_url="https://login.cribl.cloud/oauth/token",
-            audience="https://api.cribl.cloud"
+            token_url=f"https://login.{domain}/oauth/token",
+            audience=f"https://api.{domain}"
         )
 
         # Create client  
-        base_url = f"https://gateway.cribl.cloud"
+        base_url = f"https://gateway.{domain}"
         security = Security(client_oauth=client_oauth)
         client = CriblMgmtPlane(server_url=base_url, security=security)
 
