@@ -84,9 +84,6 @@ func listWorkspaces() error {
 			if workspace.Region != "" {
 				fmt.Printf("   region: %s\n", string(workspace.Region))
 			}
-			if !workspace.LastUpdated.IsZero() {
-				fmt.Printf("   lastUpdated: %s\n", workspace.LastUpdated.String())
-			}
 			if workspace.LeaderFQDN != "" {
 				fmt.Printf("   leaderFQDN: %s\n", workspace.LeaderFQDN)
 			}
