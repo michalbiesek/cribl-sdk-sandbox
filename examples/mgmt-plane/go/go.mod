@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
-	github.com/criblio/cribl-cloud-management-sdk-go v0.1.1
+	github.com/criblio/cribl-cloud-management-sdk-go v0.2.0
 	github.com/joho/godotenv v1.5.1
 )
 

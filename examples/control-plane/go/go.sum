@@ -1,5 +1,5 @@
-github.com/criblio/cribl-control-plane-sdk-go v0.1.0 h1:6KYoRDxtH2RCZRNNvptyb6KFkIghxBfghEnyfk+vD18=
-github.com/criblio/cribl-control-plane-sdk-go v0.1.0/go.mod h1:2HGkqPWeq6w+MKEtDNX54CJPO23XSwIvghYhKB48SFk=
+github.com/criblio/cribl-control-plane-sdk-go v0.2.0 h1:twfhGRng9EOaZXPx1AKWRrYZsoeM8/zcWBM9y0XZTco=
+github.com/criblio/cribl-control-plane-sdk-go v0.2.0/go.mod h1:2HGkqPWeq6w+MKEtDNX54CJPO23XSwIvghYhKB48SFk=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
