@@ -51,20 +51,20 @@ Run examples in Python, TypeScript, or Go:
 
 ```bash
 # Control Plane Examples
-python examples/control-plane/python/cloud_list_worker_group.py
-python examples/control-plane/python/onprem_list_worker_group.py
+python examples/control-plane/python/example_cloud.py
+python examples/control-plane/python/example_onprem.py
 
 # Management Plane Examples  
-python examples/mgmt-plane/python/list_workspaces.py
+python examples/mgmt-plane/python/example.py
 
 # Or use npm scripts
 npm run control-plane:cloud
 npm run control-plane:onprem
-npm run mgmt-plane:workspaces
+npm run mgmt-plane:example
 
 # Or run Go examples directly
-cd examples/control-plane/go && go run cloud_list_worker_group.go
-cd examples/mgmt-plane/go && go run list_workspaces.go
+cd examples/control-plane/go && go run example_cloud.go
+cd examples/mgmt-plane/go && go run example.go
 ```
 
 ## VS Code Integration

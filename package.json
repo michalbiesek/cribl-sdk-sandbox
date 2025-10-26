@@ -5,9 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "control-plane:cloud": "npx tsx examples/control-plane/typescript/cloud_list_worker_group.ts",
-    "control-plane:onprem": "npx tsx examples/control-plane/typescript/onprem_list_worker_group.ts",
-    "mgmt-plane:workspaces": "npx tsx examples/mgmt-plane/typescript/list_workspaces.ts"
+    "control-plane:cloud": "npx tsx examples/control-plane/typescript/example_cloud.ts",
+    "control-plane:onprem": "npx tsx examples/control-plane/typescript/example_onprem.ts",
+    "mgmt-plane:example": "npx tsx examples/mgmt-plane/typescript/example.ts"
   },
   "keywords": [
     "cribl",
