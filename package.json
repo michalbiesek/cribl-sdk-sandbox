@@ -24,7 +24,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "cribl-control-plane": "latest",
+    "cribl-control-plane": "0.2.1-rc.6",
     "cribl-mgmt-plane": "latest",
     "dotenv": "^16.3.1"
   }

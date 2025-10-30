@@ -5,7 +5,7 @@ typing-extensions>=4.0.0
 httpx>=0.24.0
 
 # Cribl Control Plane SDK (Python)
-git+https://github.com/criblio/cribl_control_plane_sdk_python.git
+git+https://github.com/criblio/cribl_control_plane_sdk_python.git@v0.2.1rc6
 
 # Cribl Cloud Management SDK (Python)
 git+https://github.com/criblio/cribl_cloud_management_sdk_python.git

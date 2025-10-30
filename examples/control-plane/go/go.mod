@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
-	github.com/criblio/cribl-control-plane-sdk-go v0.2.0
+	github.com/criblio/cribl-control-plane-sdk-go v0.2.1-rc.6
 	github.com/joho/godotenv v1.5.1
 )
 
