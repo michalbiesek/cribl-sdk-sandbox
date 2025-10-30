@@ -1,0 +1,216 @@
+# Cribl SDK Sandbox Project
+
+## Project Overview
+
+This is a sandbox environment for working with Cribl SDKs across multiple programming languages. The project contains examples for both control-plane and management-plane operations.
+
+## Project Structure
+
+- `examples/control-plane/` - Control plane API examples in Go, Python, and TypeScript
+- `examples/mgmt-plane/` - Management plane API examples in Go, Python, and TypeScript
+- `cribl-config/` - Cribl configuration files and data
+
+## Language Support
+
+This project supports three languages:
+
+1. **Go** - Uses Go modules (go.mod/go.sum)
+2. **Python** - Uses requirements.txt for dependencies
+3. **TypeScript** - Uses npm/package.json for dependencies
+
+## Code Quality Standards
+
+### When Creating Examples
+
+- **Always verify type correctness** - Ensure no TypeScript type errors, Python type hints are accurate, and Go types are correct
+- **Always check for compilation issues** - Verify that code would compile/parse successfully (but do NOT run the examples)
+- **Use type checking tools conceptually** - Think through what `tsc`, `mypy`, or `go build` would report
+- **Follow language idioms** - Use appropriate patterns for each language
+
+### Go Examples
+
+- Use proper error handling (check all errors)
+- Follow Go naming conventions (e.g., exported names start with capital letters)
+- Use `go.mod` for dependency management
+- Ensure imports are correct and available
+- Check for common issues: unused variables, missing returns, type mismatches
+
+### Python Examples
+
+- Use type hints where appropriate
+- Follow PEP 8 style guidelines
+- Check that all imports are valid
+- Ensure proper indentation (4 spaces)
+- Verify function signatures and return types
+
+### TypeScript Examples
+
+- Use strict type checking
+- Ensure all types are properly defined
+- Check for missing properties or type mismatches
+- Use proper async/await patterns
+- Verify import paths and module resolution
+
+## API Patterns
+
+- Control Plane: Operations related to control plane functionality
+- Management Plane: Operations related to management and configuration
+
+## Control Plane API Contexts and Base URLs
+
+When working with the Cribl Control Plane API, it's critical to understand the different API contexts and when to use each base URL format.
+
+### Global Context (Leader URL)
+
+Use the **Global Context** (leader URL) for operations that apply to the entire Workspace/Organization or instance:
+
+- **Creating worker groups/fleets**
+- Managing feature settings
+- Resources outside the context of a specific Worker Group or Fleet
+
+**Base URL formats:**
+
+- Cribl.Cloud: `https://${workspaceName}-${organizationId}.cribl.cloud/api/v1`
+- Customer-Managed: `https://${hostname}:${port}/api/v1`
+
+**Example:** Creating a worker group via `POST /master/groups`
+
+### Group/Fleet Context (Worker Group URL)
+
+Use the **Group/Fleet Context** for operations on resources within a specific Worker Group or Edge Fleet:
+
+- **CRUD operations on sources/destinations/pipelines in distributed deployments**
+- Managing Group/Fleet-specific configurations
+- Accessing commit history for a specific Group/Fleet
+
+**Base URL formats:**
+
+- Cribl.Cloud: `https://${workspaceName}-${organizationId}.cribl.cloud/api/v1/m/${groupName}`
+- Customer-Managed: `https://${hostname}:${port}/api/v1/m/${groupName}`
+
+**Example:** Creating a destination for a Worker Group via `POST /m/${groupName}/system/outputs`
+
+### Host Context (Node-Specific)
+
+Use the **Host Context** for operations on a single Worker or Edge Node:
+
+- Getting host metadata
+- Node-specific operations
+
+**Base URL formats:**
+
+- Cribl.Cloud: `https://${workspaceName}-${organizationId}.cribl.cloud/api/v1/w/${nodeId}`
+- Customer-Managed: `https://${hostname}:${port}/api/v1/w/${nodeId}`
+
+**Example:** Getting host metadata via `GET /w/${nodeId}/edge/metadata`
+
+### Important Notes
+
+- **In distributed deployments**, when performing CRUD on sources/destinations/pipelines, always use the Group/Fleet context (`/m/${groupName}`) instead of pointing to the leader
+- If your license is limited to a single Worker Group, the `groupName` is always `default`
+- To compose the complete URL, append the endpoint path to the appropriate base URL
+
+## Worker Group Configuration
+
+When creating or updating Worker Groups, it's critical to explicitly specify the deployment type to avoid API validation errors.
+
+### Cloud vs On-Premise Worker Groups
+
+Worker Groups must be clearly identified as either cloud-based or on-premise:
+
+**Cloud Worker Groups:**
+
+- **ALWAYS set `onPrem: false` explicitly**
+- **MUST include the `cloud` object** with:
+  - `provider`: Either `"aws"` or `"azure"` (use SDK enums: `CloudProvider.Aws` or `CloudProvider.Azure`)
+  - `region`: The cloud region (e.g., `"us-east-1"`, `"eastus"`)
+
+**On-Premise Worker Groups:**
+
+- **Set `onPrem: true` explicitly**, OR
+- **Omit the `cloud` object entirely**
+- Do NOT include both `onPrem: true` and a `cloud` object
+
+### Example: Creating a Cloud Worker Group
+
+```typescript
+// TypeScript
+await client.groups.create({
+  product: ProductsCore.Stream,
+  configGroup: {
+    id: "my-cloud-group",
+    name: "My Cloud Worker Group",
+    description: "Cloud worker group in AWS",
+    onPrem: false, // REQUIRED for cloud groups
+    estimatedIngestRate: 200, // REQUIRED for cloud groups (GB/day)
+    cloud: {
+      provider: CloudProvider.Aws,
+      region: "us-east-1",
+    },
+  },
+});
+```
+
+### Example: Creating an On-Premise Worker Group
+
+```typescript
+// TypeScript
+await client.groups.create({
+  product: ProductsCore.Stream,
+  configGroup: {
+    id: "my-onprem-group",
+    description: "On-premise worker group",
+    onPrem: true, // Explicit on-prem flag
+    // No cloud object
+  },
+});
+```
+
+### Common Errors
+
+**Error 1:** `"Group cannot be both onPrem and cloud at the same time"`
+
+**Cause:** The `onPrem` field was not explicitly set to `false` when creating a cloud worker group, or both `onPrem: true` and `cloud` object were provided.
+
+**Solution:** Always explicitly set `onPrem: false` when including a `cloud` configuration object.
+
+**Error 2:** `"should have required property 'name'"` or `"should have required property 'estimatedIngestRate'"`
+
+**Cause:** When creating a cloud worker group (`onPrem: false`), the required fields `name` and `estimatedIngestRate` are missing.
+
+**Solution:** Always include both `name` (display name) and `estimatedIngestRate` (in GB/day) when creating cloud worker groups.
+
+## Working with Examples
+
+- **Always prefer modifying existing examples over creating new ones** - When asked for a new example, check if there's an existing example that can be updated or extended
+- Maintain consistency across the same functionality in different languages (Go, Python, TypeScript)
+- **Research SDK usage before creating examples**:
+  - Check if the SDK is available locally in the project (node_modules, Python packages, Go modules)
+  - If not available locally, search for the SDK documentation or repository remotely
+  - Look for examples in the API specification (OpenAPI/Swagger, etc.) that was used to generate the SDK
+  - Study existing SDK methods, types, and patterns to ensure accurate usage
+  - Reference official SDK examples and documentation to follow best practices
+
+## Before Completing Any Example
+
+1. Review for syntax errors
+2. Check all type definitions and usages
+3. Verify imports and dependencies exist
+4. Ensure function signatures are correct
+5. Look for common mistakes (undefined variables, wrong types, etc.)
+6. **Do NOT run or execute the examples** - only verify they would compile/parse correctly
+
+## Cribl Configuration
+
+The `cribl-config/` directory contains configuration files, pipelines, functions, and sample data. When working with Cribl configs:
+
+- YAML files follow Cribl's configuration schema
+- Pipelines are in `pipelines/` directories
+- Sample data is in `data/samples/`
+
+## General Guidelines
+
+- Maintain consistency across language implementations
+- Add clear comments explaining complex logic
+- Keep examples focused and easy to understand
+- Use meaningful variable and function names
