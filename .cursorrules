@@ -131,41 +131,6 @@ Worker Groups must be clearly identified as either cloud-based or on-premise:
 - **Omit the `cloud` object entirely**
 - Do NOT include both `onPrem: true` and a `cloud` object
 
-### Example: Creating a Cloud Worker Group
-
-```typescript
-// TypeScript
-await client.groups.create({
-  product: ProductsCore.Stream,
-  configGroup: {
-    id: "my-cloud-group",
-    name: "My Cloud Worker Group",
-    description: "Cloud worker group in AWS",
-    onPrem: false, // REQUIRED for cloud groups
-    estimatedIngestRate: 200, // REQUIRED for cloud groups (GB/day)
-    cloud: {
-      provider: CloudProvider.Aws,
-      region: "us-east-1",
-    },
-  },
-});
-```
-
-### Example: Creating an On-Premise Worker Group
-
-```typescript
-// TypeScript
-await client.groups.create({
-  product: ProductsCore.Stream,
-  configGroup: {
-    id: "my-onprem-group",
-    description: "On-premise worker group",
-    onPrem: true, // Explicit on-prem flag
-    // No cloud object
-  },
-});
-```
-
 ### Common Errors
 
 **Error 1:** `"Group cannot be both onPrem and cloud at the same time"`
@@ -178,7 +143,7 @@ await client.groups.create({
 
 **Cause:** When creating a cloud worker group (`onPrem: false`), the required fields `name` and `estimatedIngestRate` are missing.
 
-**Solution:** Always include both `name` (display name) and `estimatedIngestRate` (in GB/day) when creating cloud worker groups.
+**Solution:** Always include both `name` (lowercase with hyphens, matching pattern `^[a-z0-9-]+$`) and `estimatedIngestRate` (predefined values like 1024, 2048, 3072, etc.) when creating cloud worker groups.
 
 ## Working with Examples
 
