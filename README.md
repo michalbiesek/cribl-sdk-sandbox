@@ -40,9 +40,12 @@ For detailed authentication setup, see: [Cribl API Documentation](https://docs.c
 
 Connect to an on-premise Cribl Control Plane:
 
-- `CRIBL_SERVER_URL` - Server URL (e.g., `http://localhost:19000`)
+- `CRIBL_SERVER_URL` - Server URL (e.g., `http://localhost:19000`, `https://localhost:9000`, or `https://cribl.example.com:8000`)
 - `CRIBL_USERNAME` - Username (defaults to `admin`)
 - `CRIBL_PASSWORD` - Password (defaults to `admin`)
+- `CRIBL_INSECURE_TLS` - Accept self-signed certificates for HTTPS connections (defaults to `true` for development convenience, set to `false` for production)
+
+**Self-Signed Certificates**: By default, the on-premise examples accept self-signed TLS certificates when connecting via HTTPS (useful for development/testing). Set `CRIBL_INSECURE_TLS=false` to enforce strict certificate verification in production environments.
 
 #### Local Testing
 
@@ -79,6 +82,7 @@ npm run mgmt-plane:example
 
 # Or run Go examples directly
 cd examples/control-plane/go && go run example_cloud.go
+cd examples/control-plane/go && go run example_onprem.go
 cd examples/mgmt-plane/go && go run example.go
 ```
 

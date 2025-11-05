@@ -17,6 +17,8 @@ async function listWorkerGroups(): Promise<void> {
   const serverUrl = process.env.CRIBL_SERVER_URL || "http://localhost:19000";
   const username = process.env.CRIBL_USERNAME || "admin";
   const password = process.env.CRIBL_PASSWORD || "admin";
+  // Default to true for on-prem development environments with self-signed certs
+  const insecureTls = process.env.CRIBL_INSECURE_TLS !== "false";
 
   // Check if server URL is properly set
   if (serverUrl.startsWith("your-")) {
@@ -32,6 +34,12 @@ async function listWorkerGroups(): Promise<void> {
     // Create base URL for API
     const baseUrl = `${serverUrl.replace(/\/$/, "")}/api/v1`;
     console.log(`Connecting to: ${baseUrl}`);
+
+    // Configure TLS for HTTPS with self-signed certificates
+    if (serverUrl.startsWith("https") && insecureTls) {
+      console.log("⚠️  Accepting self-signed certificates (insecure mode)");
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    }
 
     // First, create an unauthenticated client to get a token
     let client = new CriblControlPlane({ serverURL: baseUrl });
@@ -75,7 +83,20 @@ async function listWorkerGroups(): Promise<void> {
       console.log("No worker groups found");
     }
   } catch (error) {
-    console.log(`Error: ${error}`);
+    const errorMsg = String(error);
+    console.log(`Error: ${errorMsg}`);
+
+    // Check if error is related to self-signed certificates
+    if (
+      errorMsg.includes("self signed certificate") ||
+      errorMsg.includes("DEPTH_ZERO_SELF_SIGNED_CERT") ||
+      errorMsg.includes("certificate") ||
+      errorMsg.includes("CERT_")
+    ) {
+      console.log("\n💡 Tip: If you're using a self-signed certificate, set:");
+      console.log("   CRIBL_INSECURE_TLS=true");
+      console.log("   (Only use this in development/testing environments!)");
+    }
   }
 }
 

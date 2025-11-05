@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -25,6 +27,8 @@ func listWorkerGroups() error {
 	serverURL := getEnvOrDefault("CRIBL_SERVER_URL", "http://localhost:19000")
 	username := getEnvOrDefault("CRIBL_USERNAME", "admin")
 	password := getEnvOrDefault("CRIBL_PASSWORD", "admin")
+	// Default to true for on-prem development environments with self-signed certs
+	insecureTLS := getEnvOrDefault("CRIBL_INSECURE_TLS", "true") != "false"
 
 	// Check if server URL is properly set
 	if strings.HasPrefix(serverURL, "your-") {
@@ -38,8 +42,19 @@ func listWorkerGroups() error {
 	baseURL := strings.TrimSuffix(serverURL, "/") + "/api/v1"
 	fmt.Printf("Connecting to: %s\n", baseURL)
 
+	// Configure TLS for HTTPS with self-signed certificates
+	var clientOpts []criblcontrolplane.SDKOption
+	if strings.HasPrefix(serverURL, "https") && insecureTLS {
+		fmt.Println("⚠️  Accepting self-signed certificates (insecure mode)")
+		clientOpts = append(clientOpts, criblcontrolplane.WithClient(&http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+		}))
+	}
+
 	// First, create an unauthenticated client to get a token
-	client := criblcontrolplane.New(baseURL)
+	client := criblcontrolplane.New(baseURL, clientOpts...)
 
 	// Authenticate with username/password to get token
 	fmt.Println("Authenticating with username/password...")
@@ -53,6 +68,13 @@ func listWorkerGroups() error {
 
 	authResponse, err := client.Auth.Tokens.Get(ctx, loginInfo)
 	if err != nil {
+		errMsg := err.Error()
+		// Check if error is related to self-signed certificates
+		if strings.Contains(errMsg, "certificate") || strings.Contains(errMsg, "x509") || strings.Contains(errMsg, "TLS") {
+			fmt.Println("\n💡 Tip: If you're using a self-signed certificate, set:")
+			fmt.Println("   CRIBL_INSECURE_TLS=true")
+			fmt.Println("   (Only use this in development/testing environments!)")
+		}
 		return fmt.Errorf("Authentication failed: %w", err)
 	}
 
@@ -69,7 +91,8 @@ func listWorkerGroups() error {
 		BearerAuth: &token,
 	}
 
-	client = criblcontrolplane.New(baseURL, criblcontrolplane.WithSecurity(security))
+	clientOpts = append(clientOpts, criblcontrolplane.WithSecurity(security))
+	client = criblcontrolplane.New(baseURL, clientOpts...)
 	fmt.Println("Cribl SDK client created for on-prem server")
 
 	// List worker groups
