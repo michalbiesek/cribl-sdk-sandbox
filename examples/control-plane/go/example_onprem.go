@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +17,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// listWorkerGroups demonstrates listing worker groups from on-premise Cribl Control Plane
-func listWorkerGroups() error {
-	fmt.Println("Listing On-Premise Cribl Worker Groups")
+// captureEvents demonstrates calling system.captures.get on on-premise Cribl Control Plane
+func captureEvents() error {
+	fmt.Println("Calling system.captures.get on On-Premise Cribl")
 	fmt.Println(strings.Repeat("-", 45))
 
 	// Load environment variables - try project root first, then current directory
@@ -95,40 +98,69 @@ func listWorkerGroups() error {
 	client = criblcontrolplane.New(baseURL, clientOpts...)
 	fmt.Println("Cribl SDK client created for on-prem server")
 
-	// List worker groups
-	fmt.Println("Fetching worker groups...")
+	// Call system.captures.get
+	fmt.Println("\nCalling system.captures.get...")
+	fmt.Println("Payload: {\"filter\":\"__inputId=='datagen:datagenTest'\",\"duration\":10,\"maxEvents\":10,\"level\":0}")
 
-	response, err := client.Groups.List(ctx, components.ProductsCoreStream, nil)
-	if err != nil {
-		return fmt.Errorf("Error: %w", err)
+	captureParams := components.CaptureParams{
+		Filter:    "__inputId=='datagen:datagenTest'",
+		Duration:  10,
+		MaxEvents: 10,
+		Level:     components.CaptureLevelZero,
 	}
 
-	// Handle the response
-	if response.Object != nil && response.Object.Items != nil {
-		items := response.Object.Items
-		fmt.Printf("\nFound %d worker group(s):\n", len(items))
-		fmt.Println()
+	capturesResponse, err := client.System.Captures.Get(ctx, captureParams)
+	if err != nil {
+		return fmt.Errorf("Error calling system.captures.get: %w", err)
+	}
 
-		for _, group := range items {
-			groupID := group.ID
-			if groupID == "" {
-				groupID = "Unknown"
+	fmt.Println("\nCaptures response:")
+	fmt.Println(strings.Repeat("-", 50))
+	if capturesResponse != nil && capturesResponse.HTTPMeta.Response != nil {
+		// Read the stream response (JSONL format)
+		body := capturesResponse.HTTPMeta.Response.Body
+		if body != nil {
+			defer body.Close()
+
+			scanner := bufio.NewScanner(body)
+			eventCount := 0
+
+			for scanner.Scan() {
+				line := scanner.Text()
+				if line == "" {
+					continue
+				}
+
+				eventCount++
+				fmt.Printf("Event %d:\n", eventCount)
+
+				// Try to parse and pretty-print JSON
+				var eventData map[string]interface{}
+				if err := json.Unmarshal([]byte(line), &eventData); err == nil {
+					jsonBytes, _ := json.MarshalIndent(eventData, "  ", "  ")
+					fmt.Println(string(jsonBytes))
+				} else {
+					// If not valid JSON, just print the line
+					fmt.Println(line)
+				}
+				fmt.Println()
 			}
 
-			fmt.Printf("Worker Group: %s\n", groupID)
-			fmt.Println(strings.Repeat("-", len(groupID)+16))
+			if err := scanner.Err(); err != nil && err != io.EOF {
+				return fmt.Errorf("Error reading captures stream: %w", err)
+			}
 
-			// Print available fields (this is a simplified version)
-			if group.ID != "" {
-				fmt.Printf("   id: %s\n", group.ID)
+			if eventCount == 0 {
+				fmt.Println("No events captured")
 			}
-			if group.Description != nil && *group.Description != "" {
-				fmt.Printf("   description: %s\n", *group.Description)
-			}
-			fmt.Println()
+		} else {
+			fmt.Println("Response body is nil")
 		}
 	} else {
-		fmt.Println("No worker groups found")
+		fmt.Println("No response received or invalid response structure")
+		if capturesResponse != nil {
+			fmt.Printf("Response structure: %+v\n", capturesResponse)
+		}
 	}
 
 	return nil
@@ -143,7 +175,7 @@ func getEnvOrDefault(key, defaultValue string) string {
 }
 
 func main() {
-	if err := listWorkerGroups(); err != nil {
+	if err := captureEvents(); err != nil {
 		log.Fatal(err)
 	}
 }

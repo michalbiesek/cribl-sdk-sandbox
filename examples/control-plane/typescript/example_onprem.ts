@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 /**
- * Simple example: List Worker Groups from On-Premise Cribl Control Plane
+ * Simple example: Call system.captures.get on On-Premise Cribl Control Plane
  */
 
 import { CriblControlPlane } from "cribl-control-plane";
+import { CaptureLevel, CaptureParams } from "cribl-control-plane/models";
 import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
 
-async function listWorkerGroups(): Promise<void> {
-  console.log("Listing On-Premise Cribl Worker Groups");
+async function captureEvents(): Promise<void> {
+  console.log("Calling system.captures.get on On-Premise Cribl");
   console.log("-".repeat(45));
 
   // Get credentials from environment with placeholders
@@ -47,7 +48,7 @@ async function listWorkerGroups(): Promise<void> {
     // Authenticate with username/password to get token
     console.log("Authenticating with username/password...");
     const authResponse = await client.auth.tokens.get({ username, password });
-    const token = authResponse.token;
+    const token = authResponse.result.token;
     console.log(`Authenticated with on-prem server, token: ${token}`);
 
     // Create authenticated SDK client with bearer token
@@ -57,30 +58,37 @@ async function listWorkerGroups(): Promise<void> {
     });
     console.log("Cribl SDK client created for on-prem server");
 
-    // List worker groups
-    console.log("Fetching worker groups...");
-    const response = await client.groups.list({ product: "stream" });
+    // Call system.captures.get
+    console.log("\nCalling system.captures.get...");
+    console.log(
+      'Payload: {"filter":"__inputId==\'datagen:datagenTest\'","duration":10,"maxEvents":10,"level":0}'
+    );
 
-    // Handle the case where items might be undefined or empty
-    const items = response.items || [];
+    const captureParams: CaptureParams = {
+      filter: "__inputId=='datagen:datagenTest'",
+      duration: 10,
+      maxEvents: 10,
+      level: CaptureLevel.Zero,
+    };
 
-    if (items.length > 0) {
-      console.log(`\nFound ${items.length} worker group(s):`);
-      console.log();
-
-      for (const group of items) {
-        const groupId = group.id || "Unknown";
-        console.log(`Worker Group: ${groupId}`);
-        console.log("-".repeat(groupId.length + 16));
-
-        // Print all available fields
-        Object.entries(group).forEach(([key, value]) => {
-          console.log(`   ${key}: ${value}`);
-        });
+    console.log("\nCaptures response:");
+    console.log("-".repeat(50));
+    const stream = await client.system.captures.get(captureParams);
+    let eventCount = 0;
+    
+    try {
+      for await (const event of stream) {
+        eventCount++;
+        console.log(`Event ${eventCount}:`);
+        console.log(event);
         console.log();
       }
-    } else {
-      console.log("No worker groups found");
+      
+      if (eventCount === 0) {
+        console.log("No events captured");
+      }
+    } catch (error) {
+      console.log(`Error reading captures stream: ${error}`);
     }
   } catch (error) {
     const errorMsg = String(error);
@@ -101,4 +109,4 @@ async function listWorkerGroups(): Promise<void> {
 }
 
 // Run the example
-listWorkerGroups().catch(console.error);
+captureEvents().catch(console.error);

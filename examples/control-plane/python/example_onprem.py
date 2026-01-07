@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple example: List Worker Groups from On-Premise Cribl Control Plane
+Simple example: Call system.captures.get on On-Premise Cribl Control Plane
 """
 
 import asyncio
@@ -9,7 +9,7 @@ import logging
 import httpx
 from dotenv import load_dotenv
 from cribl_control_plane import CriblControlPlane
-from cribl_control_plane.models import Security, ProductsCore
+from cribl_control_plane.models import Security, CaptureLevel
 
 # Load environment variables
 load_dotenv()
@@ -18,9 +18,9 @@ load_dotenv()
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
-async def list_worker_groups():
-    """List all worker groups in on-premise Cribl Control Plane."""
-    print("🚀 Listing On-Premise Cribl Worker Groups")
+async def capture_events():
+    """Call system.captures.get on on-premise Cribl Control Plane."""
+    print("🚀 Calling system.captures.get on On-Premise Cribl")
     print("-" * 45)
 
     # Get credentials from environment with placeholders
@@ -61,7 +61,7 @@ async def list_worker_groups():
         # Authenticate with username/password to get token
         print("🔐 Authenticating with username/password...")
         response = await client.auth.tokens.get_async(username=username, password=password)
-        token = response.token
+        token = response.result.token
         print(f"✅ Authenticated with on-prem server, token: {token}")
 
         # Create authenticated SDK client with bearer token
@@ -72,27 +72,28 @@ async def list_worker_groups():
         )
         print("✅ Cribl SDK client created for on-prem server")
 
-        # List worker groups
-        print("📡 Fetching worker groups...")
-        response = await client.groups.list_async(product=ProductsCore.STREAM)
+        # Call system.captures.get
+        print("\n📡 Calling system.captures.get...")
+        print("Payload: {\"filter\":\"__inputId=='datagen:datagenTest'\",\"duration\":10,\"maxEvents\":10,\"level\":0}")
         
-        # Handle the case where items might be None or empty
-        items = response.items or []
+        captures_response = await client.system.captures.get_async(
+            filter_="__inputId=='datagen:datagenTest'",
+            duration=10,
+            max_events=10,
+            level=CaptureLevel.ZERO
+        )
         
-        if items:
-            print(f"\n✅ Found {len(items)} worker group(s):")
+        print("\n✅ Captures response:")
+        print("-" * 50)
+        event_count = 0
+        async for event in captures_response:
+            event_count += 1
+            print(f"Event {event_count}:")
+            print(event)
             print()
-            
-            for group in items:
-                print(f"📋 Worker Group: {group.id}")
-                print("-" * (len(group.id) + 16))
-                
-                # Print all available fields
-                for attr_name, value in vars(group).items():
-                    print(f"   {attr_name}: {value}")
-                print()
-        else:
-            print("📝 No worker groups found")
+        
+        if event_count == 0:
+            print("No events captured")
 
     except Exception as error:
         error_msg = str(error)
@@ -107,4 +108,4 @@ async def list_worker_groups():
             print("   (Only use this in development/testing environments!)")
 
 if __name__ == "__main__":
-    asyncio.run(list_worker_groups())
+    asyncio.run(capture_events())

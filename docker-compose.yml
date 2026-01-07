@@ -3,8 +3,8 @@ services:
     image: cribl/cribl:latest
     container_name: cribl-leader
     environment:
-      - CRIBL_DIST_MODE=leader
-      - CRIBL_DIST_LEADER_URL=tcp://${CRIBL_DIST_TOKEN:-criblmaster}@0.0.0.0:4200
+      # - CRIBL_DIST_MODE=leader
+      # - CRIBL_DIST_LEADER_URL=tcp://${CRIBL_DIST_TOKEN:-criblmaster}@0.0.0.0:4200
       - CRIBL_VOLUME_DIR=/opt/cribl/config-volume
     ports:
       - "19000:9000"  # Cribl Stream UI
